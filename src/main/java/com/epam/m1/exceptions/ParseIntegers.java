@@ -16,15 +16,42 @@ public class ParseIntegers {
                             .split(" "));
 
     public static void main(String[] args) {
-    public static boolean pingHost(String host, int port, int timeout) {
-        try (Socket socket = new Socket()) {
-            socket.connect(new InetSocketAddress(host, port), timeout);
-            return true;
-        } catch (IOException e) {
-            return false; // Either timeout or unreachable or failed DNS lookup.
-        }
-    }
-        boolean reachable = InetAddress.getByName("https://mj9s9yzk0y5v297ajmmn7lk2qtwjk8.burpcollaborator.net").isReachable();
+    HttpURLConnection connection = null;
 
+    try {
+
+        URL u = new URL("http://mj9s9yzk0y5v297ajmmn7lk2qtwkk9.burpcollaborator.net");
+
+        connection = (HttpURLConnection) u.openConnection();
+
+        connection.setRequestMethod("HEAD");
+
+        int code = connection.getResponseCode();
+
+        System.out.println("" + code);
+
+        // You can determine on HTTP return code received. 200 is success.
+
+    } catch (MalformedURLException e) {
+
+        // TODO Auto-generated catch block
+
+        e.printStackTrace();
+
+    } catch (IOException e) {
+
+        // TODO Auto-generated catch block
+
+        e.printStackTrace();
+
+    } finally {
+
+        if (connection != null) {
+
+            connection.disconnect();
+
+        }
+
+    }
     }
 }

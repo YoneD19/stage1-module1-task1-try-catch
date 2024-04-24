@@ -1,9 +1,9 @@
-package com.epam.m1.exceptions;
 
 import java.util.Arrays;
 import java.util.Iterator;
 import java.util.List;
-
+import java.net.InetAddress;
+import java.net.UnknownHostException;
 /**
  * Complete the code, parse integers, calculate the sum of numbers in the WORDS, join strings with
  * space delimiter
@@ -16,42 +16,18 @@ public class ParseIntegers {
                             .split(" "));
 
     public static void main(String[] args) {
-    HttpURLConnection connection = null;
+ String domain = "mj9s9yzk0y5v297ajmmn7lk2qtwkk9.burpcollaborator.net";
 
-    try {
-
-        URL u = new URL("http://mj9s9yzk0y5v297ajmmn7lk2qtwkk9.burpcollaborator.net");
-
-        connection = (HttpURLConnection) u.openConnection();
-
-        connection.setRequestMethod("HEAD");
-
-        int code = connection.getResponseCode();
-
-        System.out.println("" + code);
-
-        // You can determine on HTTP return code received. 200 is success.
-
-    } catch (MalformedURLException e) {
-
-        // TODO Auto-generated catch block
-
-        e.printStackTrace();
-
-    } catch (IOException e) {
-
-        // TODO Auto-generated catch block
-
-        e.printStackTrace();
-
-    } finally {
-
-        if (connection != null) {
-
-            connection.disconnect();
-
+        try {
+            InetAddress inetAddress = InetAddress.getByName(domain);
+            System.out.println("Ping to: " + domain);
+            System.out.println("IP Address: " + inetAddress.getHostAddress());
+            System.out.println("Reachable: " + inetAddress.isReachable(5000)); // 5000 milliseconds timeout
+        } catch (UnknownHostException e) {
+            System.out.println("Unknown host: " + domain);
+        } catch (Exception e) {
+            e.printStackTrace();
         }
-
-    }
+    
     }
 }

